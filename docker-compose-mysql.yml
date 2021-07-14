@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  mysql:
+    image: docker.io/bitnami/mysql:8.0
+    container_name: mariadb
+    volumes:
+      - 'mysql_data:/bitnami/mysql'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_USER=backjam_user
+      - MYSQL_PASSWORD=backjam
+      - MYSQL_DATABASE=backjam_db
+  backjam:
+    image: backjam/backjam:1.0
+    container_name: backjam
+    volumes:
+      - backjam_data:/server/data
+      - logs_data:/server/logs
+    environment:
+      - BACKJAM_API_HOST=http://localhost:8009
+      - BACKJAM_WEB_HOST=http://localhost:8109
+      - BACKJAM_DATABASE_CONNECTION=mysql
+      - BACKJAM_DATABASE_HOST=mysql
+      - BACKJAM_DATABASE_PORT_NUMBER=3306
+      - BACKJAM_DATABASE_USER=backjam_user
+      - BACKJAM_DATABASE_NAME=backjam_db
+      - BACKJAM_JWT_ACCESS_TOKEN_SECRET_KEY=access_token_secret_key_here
+      - BACKJAM_JWT_REFRESH_TOKEN_SECRET_KEY=refresh_token_secret_key_here
+    ports:
+      - 8009:8009
+      - 8109:8109
+    depends_on:
+      - mysql
+
+volumes:
+  mariadb_data:
+    driver: local
+  backjam_data:
+    driver: local
+  logs_data:
+    driver: local

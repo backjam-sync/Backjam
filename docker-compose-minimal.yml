@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  backjam:
+    image: backjam/backjam:1.0
+    container_name: backjam
+    environment:
+      - BACKJAM_API_HOST=http://localhost:8009
+    ports:
+      - 8109:8109
+      - 8009:8009
